@@ -65,7 +65,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
+'''DATABASES = {
     'default': {
         #'ENGINE': 'django.db.backends.sqlite3',
         #'NAME': BASE_DIR / 'db.sqlite3',
@@ -76,9 +76,18 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5432',
     }
+}'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'dbname',
+        'USER': 'amir',
+        'PASSWORD': '123',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -139,3 +148,10 @@ SIMPLE_JWT = {
 AUTHENTICATION_BACKENDS = [
     'account.backends.EmailModelBackend',
     ]
+    
+    
+    
+import pymysql
+pymysql.install_as_MySQLdb()
+
+    
