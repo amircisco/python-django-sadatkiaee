@@ -12,6 +12,7 @@ admin.site.index_title = 'صفحه اصلی'
 admin.site.site_title = 'سادات کیایی'
 
 urlpatterns = [
+    path('', admin.site.urls),
     path('admin/', admin.site.urls),
     path('install/', install,name="install"),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
