@@ -12,9 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'b+-obg*5qgki!@jfea7k)u3o5&eulj$##ar9flik2e4dp%zgmp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['sadat-kiaee.ir','127.0.0.1']
+ALLOWED_HOSTS = ['sadat-kiaee.ir','127.0.0.1','localhost']
 
 
 # Application definition
@@ -71,8 +71,8 @@ DATABASES = {
         #'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'sadatkia_customd',
-        'USER': 'amir',
-        'PASSWORD': '123',
+        'USER': 'root',
+        'PASSWORD': 'cisco@cisco@123',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {'charset': 'utf8mb4'},
@@ -115,14 +115,18 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = '/home1/sadatkia/public_html/static/'
 AUTH_USER_MODEL = 'account.User'
 
-MEDIA_ROOT = '/home1/sadatkia/public_html/media/' #os.path.join(BASE_DIR,'media)
-
+STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
+MEDIA_ROOT =  os.path.join(BASE_DIR,'media')
+
+if DEBUG==False:
+    STATIC_ROOT = '/home1/sadatkia/public_html/static/'
+    MEDIA_ROOT = '/home1/sadatkia/public_html/media/'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES' : [
         'rest_framework_simplejwt.authentication.JWTAuthentication'

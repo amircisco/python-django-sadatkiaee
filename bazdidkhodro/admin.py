@@ -21,6 +21,7 @@ class ImageAdmin(admin.ModelAdmin):
     def get_visit_info(self,obj):
         visit = Visit.objects.get(pk=obj.visit_id)
         return visit.insurer
+    get_visit_info.short_description = "اطلاعات بیمه گذار"
 
 class ImageInline(admin.TabularInline):
     model = Image
