@@ -65,10 +65,39 @@ class Image(models.Model):
 
 
 class Document(models.Model):
-    user = models.ForeignKey(Insurer,on_delete=models.CASCADE)
-    file = models.FileField(upload_to="files/%Y/%m/%d",verbose_name="فایل")
+    user = models.ForeignKey(Insurer,on_delete=models.CASCADE,verbose_name="بیمه گذار")
 
     class Meta:
-        verbose_name = 'فایل'
-        verbose_name_plural = 'فایل ها'
+        verbose_name = 'مدرک(کارمندان)'
+        verbose_name_plural = 'مدارک(کارمندان)'
         ordering = ('-id',)
+
+
+class DocumentFile(models.Model):
+    document = models.ForeignKey(Document,on_delete=models.CASCADE)
+    file = models.FileField(upload_to="staff/documents/%Y/%m/%d",verbose_name="مدرک")
+
+    class Meta:
+        verbose_name = 'مدرک'
+        verbose_name_plural = 'مدارک'
+
+
+class InsurerDocument(models.Model):
+    user = models.ForeignKey(Insurer,on_delete=models.CASCADE,verbose_name="بیمه گذار")
+
+    class Meta:
+        verbose_name = 'مدرک(بیمه گذاران)'
+        verbose_name_plural = 'مدارک(بیمه گذاران)'
+        ordering = ('-id',)
+
+    def __str__(self):
+        return self.user.
+
+class InsurerDocumentFile(models.Model):
+    document = models.ForeignKey(InsurerDocument,on_delete=models.CASCADE)
+    file = models.FileField(upload_to="insurer/documents/%Y/%m/%d",verbose_name="مدرک")
+
+    class Meta:
+        verbose_name = 'مدرک'
+        verbose_name_plural = 'مدارک'
+

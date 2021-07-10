@@ -1,27 +1,30 @@
 from django.contrib import admin
 import openpyxl
-from bazdidkhodro.models import (Image,Insurer,Visit,Document)
+from bazdidkhodro.models import (Image, Insurer, Visit, Document, DocumentFile, InsurerDocument, InsurerDocumentFile)
 from django.utils.safestring import mark_safe
 from django import forms
-import csv
+from django.shortcuts import redirect,HttpResponseRedirect,reverse
 from django.contrib import messages
 from django.forms import ValidationError
 
+
 class ImageAdmin(admin.ModelAdmin):
     model = Image
-    fields = ['']
-    list_display = ['get_img','get_visit_info']
-    list_per_page = 10
+    fields = [
+        'visit',
+    ]
+    deleted_visit_id = None
 
-    def get_img(self,obj):
-        if len(str(obj.img)) > 0:
-            return mark_safe(f'<img src="/media/{obj.img}" width="60" height="60" />')
-    get_img.short_description = "تصویر"
+    def has_module_permission(self, request):
+        return False
 
-    def get_visit_info(self,obj):
-        visit = Visit.objects.get(pk=obj.visit_id)
-        return visit.insurer
-    get_visit_info.short_description = "اطلاعات بیمه گذار"
+    def delete_view(self, request, object_id, extra_context=None):
+        self.deleted_visit_id = Image.objects.get(id=object_id).visit_id
+        return super(ImageAdmin, self).delete_view(request, object_id, extra_context)
+
+    def response_delete(self, request, obj_display, obj_id):
+        return HttpResponseRedirect(reverse(f'admin:{self.model._meta.app_label}_visit_change',args=(self.deleted_visit_id,)))
+
 
 class ImageInline(admin.TabularInline):
     model = Image
@@ -32,8 +35,8 @@ class ImageInline(admin.TabularInline):
     def delete_item(self,obj):
         if len(str(obj.img)) > 0:
             return mark_safe(f'<a class="deletelink" href="/admin/{self.model._meta.app_label}/{self.model.__name__.lower()}/{obj.id}/delete/"></a>')
-
     delete_item.short_description = "حذف"
+
     def display_img(self,obj):
         if len(str(obj.img)) > 0:
             return mark_safe(f'<img src="/media/{obj.img}" width="80" height="80" />')
@@ -138,20 +141,120 @@ class InsurerAdmin(admin.ModelAdmin):
         pass
 
 
+class DocumentFileAdmin(admin.ModelAdmin):
+    model = DocumentFile
+    deleted_document_id = None
+
+    def has_module_permission(self, request):
+        return False
+
+    def delete_view(self, request, object_id, extra_context=None):
+        self.deleted_document_id = DocumentFile.objects.get(id=object_id).document_id
+        return super(DocumentFileAdmin, self).delete_view(request, object_id, extra_context)
+
+    def response_delete(self, request, obj_display, obj_id):
+        return HttpResponseRedirect(reverse(f'admin:{self.model._meta.app_label}_document_change',args=(self.deleted_document_id,)))
+
+
+class DocumentFileInline(admin.TabularInline):
+    model = DocumentFile
+    exclude = ['display_file','delete_item']
+    readonly_fields = ['display_file','delete_item']
+    extra = 0
+
+    def delete_item(self,obj):
+        if len(str(obj.file)) > 0:
+            return mark_safe(f'<a class="deletelink" href="/admin/{self.model._meta.app_label}/{self.model.__name__.lower()}/{obj.id}/delete/"></a>')
+    delete_item.short_description = "حذف"
+
+    def display_file(self,obj):
+        if len(str(obj.file)) > 0:
+            return mark_safe(f'<img src="/media/{obj.file}" width="80" height="80" />')
+        else:
+            return ""
+    display_file.short_description = "فایل اصلی"
+
+
 class DocumentAdmin(admin.ModelAdmin):
     model = Document
     fields = [
         'user',
-        'file',
     ]
-    list_display = [
+    list_display = ['get_user_info']
+    list_per_page = 10
+    inlines = [
+        DocumentFileInline,
+    ]
+
+    def get_user_info(self,obj):
+        insurer = Insurer.objects.get(pk=obj.user.id)
+        return insurer
+    get_user_info.short_description = "اطلاعات بیمه گذار"
+
+
+
+
+
+
+class InsurerDocumentFileAdmin(admin.ModelAdmin):
+    model = InsurerDocumentFile
+    deleted_document_id = None
+
+    def has_module_permission(self, request):
+        return False
+
+    def delete_view(self, request, object_id, extra_context=None):
+        self.deleted_document_id = InsurerDocumentFile.objects.get(id=object_id).document_id
+        return super(InsurerDocumentFileAdmin, self).delete_view(request, object_id, extra_context)
+
+    def response_delete(self, request, obj_display, obj_id):
+        return HttpResponseRedirect(reverse(f'admin:{self.model._meta.app_label}_insurerdocument_change',args=(self.deleted_document_id,)))
+
+
+class InsurerDocumentFileInline(admin.TabularInline):
+    model = InsurerDocumentFile
+    exclude = ['display_file','delete_item']
+    readonly_fields = ['display_file','delete_item']
+    extra = 0
+
+    def delete_item(self,obj):
+        if len(str(obj.file)) > 0:
+            return mark_safe(f'<a class="deletelink" href="/admin/{self.model._meta.app_label}/{self.model.__name__.lower()}/{obj.id}/delete/"></a>')
+    delete_item.short_description = "حذف"
+
+    def display_file(self,obj):
+        if len(str(obj.file)) > 0:
+            return mark_safe(f'<img src="/media/{obj.file}" width="80" height="80" />')
+        else:
+            return ""
+    display_file.short_description = "فایل اصلی"
+
+
+class InsurerDocumentAdmin(admin.ModelAdmin):
+    model = InsurerDocument
+    fields = [
         'user',
-        'file',
     ]
+    list_display = ['get_user_info']
+    list_per_page = 10
+    inlines = [
+        InsurerDocumentFileInline,
+    ]
+
+    def get_user_info(self,obj):
+        insurer = Insurer.objects.get(pk=obj.user.id)
+        return insurer
+    get_user_info.short_description = "اطلاعات بیمه گذار"
+
+
 
 
 admin.site.register(Visit, VisitAdmin)
 admin.site.register(Insurer,InsurerAdmin)
 admin.site.register(Image,ImageAdmin)
 admin.site.register(Document,DocumentAdmin)
+admin.site.register(DocumentFile,DocumentFileAdmin)
+admin.site.register(InsurerDocument,InsurerDocumentAdmin)
+admin.site.register(InsurerDocumentFile,InsurerDocumentFileAdmin)
+
 
