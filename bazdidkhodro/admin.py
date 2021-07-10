@@ -1,6 +1,6 @@
 from django.contrib import admin
 import openpyxl
-from bazdidkhodro.models import (Image,Insurer,Visit)
+from bazdidkhodro.models import (Image,Insurer,Visit,Document)
 from django.utils.safestring import mark_safe
 from django import forms
 import csv
@@ -137,8 +137,20 @@ class InsurerAdmin(admin.ModelAdmin):
         pass
 
 
+class DocumentAdmin(admin.ModelAdmin):
+    model = Document
+    fields = [
+        'user',
+        'file',
+    ]
+    list_display = [
+        'user',
+        'file',
+    ]
+
+
 admin.site.register(Visit, VisitAdmin)
 admin.site.register(Insurer,InsurerAdmin)
 admin.site.register(Image,ImageAdmin)
-
+admin.site.register(Document,DocumentAdmin)
 

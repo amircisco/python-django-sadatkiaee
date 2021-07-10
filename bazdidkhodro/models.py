@@ -62,3 +62,13 @@ class Image(models.Model):
         verbose_name = 'تصویر'
         verbose_name_plural = 'تصاویر'
         ordering = ('-id',)
+
+
+class Document(models.Model):
+    user = models.ForeignKey(Insurer,on_delete=models.CASCADE)
+    file = models.FileField(upload_to="files/%Y/%m/%d",verbose_name="فایل")
+
+    class Meta:
+        verbose_name = 'فایل'
+        verbose_name_plural = 'فایل ها'
+        ordering = ('-id',)
