@@ -14,7 +14,7 @@ SECRET_KEY = 'b+-obg*5qgki!@jfea7k)u3o5&eulj$##ar9flik2e4dp%zgmp'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['sadat-kiaee.ir','127.0.0.1','localhost']
 
 
 # Application definition
@@ -65,29 +65,21 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-'''DATABASES = {
+DATABASES = {
     'default': {
         #'ENGINE': 'django.db.backends.sqlite3',
         #'NAME': BASE_DIR / 'db.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'sadatkiaee',
-        'USER': 'amir',
-        'PASSWORD': '123',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}'''
-
-DATABASES = {
-    'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dbname',
-        'USER': 'amir',
-        'PASSWORD': '123',
-        'HOST': 'localhost',
+        'NAME': 'sadatkia_customd',
+        'USER': 'root',
+        'PASSWORD': 'cisco@cisco@123',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
+        'OPTIONS': {'charset': 'utf8mb4'},
     }
 }
+
+
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -112,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'fa-ir'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
 
@@ -123,13 +115,18 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = 'static_root'
 AUTH_USER_MODEL = 'account.User'
 
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
+MEDIA_ROOT =  os.path.join(BASE_DIR,'media')
+
+if DEBUG==False:
+    STATIC_ROOT = '/home1/sadatkia/public_html/static/'
+    MEDIA_ROOT = '/home1/sadatkia/public_html/media/'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES' : [
         'rest_framework_simplejwt.authentication.JWTAuthentication'
@@ -150,8 +147,6 @@ AUTHENTICATION_BACKENDS = [
     ]
     
     
-    
 import pymysql
 pymysql.install_as_MySQLdb()
 
-    

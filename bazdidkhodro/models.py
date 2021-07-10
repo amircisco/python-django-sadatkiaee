@@ -28,7 +28,7 @@ class Visit(models.Model):
     year_choices = [(str(x), str(x)) for x in range(1399, 1410)]
     insurer = models.ForeignKey(Insurer, on_delete=models.DO_NOTHING, related_name='insurer',verbose_name="بیمه گذار")
     visitor = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='visitor',
-                                limit_choices_to={'groups__name': 'visitor'})
+                                limit_choices_to={'groups__name': 'visitor'},verbose_name='بازدید کننده')
     year = models.CharField(verbose_name="سال", choices=year_choices, max_length=4, default='1400')
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
