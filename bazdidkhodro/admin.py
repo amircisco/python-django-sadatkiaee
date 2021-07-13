@@ -6,6 +6,7 @@ from django import forms
 from django.shortcuts import redirect,HttpResponseRedirect,reverse
 from django.contrib import messages
 from django.forms import ValidationError
+from account.models import User
 
 
 class ImageAdmin(admin.ModelAdmin):
@@ -180,7 +181,7 @@ class DocumentAdmin(admin.ModelAdmin):
     fields = [
         'insurer',
     ]
-    list_display = ['get_user_info']
+    list_display = ['get_user_info','get_employee_info']
     list_per_page = 10
     inlines = [
         DocumentFileInline,
@@ -191,9 +192,10 @@ class DocumentAdmin(admin.ModelAdmin):
         return insurer
     get_user_info.short_description = "اطلاعات بیمه گذار"
 
-
-
-
+    def get_employee_info(self,obj):
+        employee = User.objects.get(pk=obj.employee.id)
+        return employee
+    get_employee_info.short_description = "کارمند ارسال کننده"
 
 
 class InsurerDocumentFileAdmin(admin.ModelAdmin):

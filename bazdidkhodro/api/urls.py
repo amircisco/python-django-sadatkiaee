@@ -12,8 +12,4 @@ urlpatterns = [
     path('visit_create/', VisitCreateAPIView.as_view(), name='visit_create_view'),
     path('document_create/', DocumentCreateAPIView.as_view(), name='document_create_view'),
     path('visit_list/', VisitListAPIView.as_view(), name='visit_list_view'),
-    #path('image_update/<pk>/',ImageUpdateAPIView.as_view(), name='image_update_view'),
-    #path('image_delete/<pk>/',ImageDeleteAPIView.as_view(), name='image_delete_view'),
-    #path('show_images_by_year/',ImageGetByYearAPIView.as_view(), name='image_list_by_year_view'),
-    #path('show_images_by_mobile/',ImageGetByMobileAPIView.as_view(), name='image_list_by_mobile_view'),
 ]

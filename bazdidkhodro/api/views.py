@@ -40,7 +40,7 @@ class InsurerCreateAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self,request,*args,**kwargs):
-        if self.request.user.groups.filter(name='visitor').exists():
+        if self.request.user.groups.filter(name='visitor').exists() or self.request.user.groups.filter(name='employee').exists():
             request.data["created_by"] = request.user.id
             request.data["pelak"] = request.data["p1"] + "-" + request.data["p2"] + "-" + request.data["p3"] + "-" + request.data["p4"]
             insurer_serializer = InsurerCreateSerializer(data=request.data)

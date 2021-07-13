@@ -18,8 +18,7 @@ ALLOWED_HOSTS = [
     'sadat-kiaee.ir',
     '127.0.0.1',
     'localhost',
-    '192.168.42.108',
-    '*'
+    '*',
 ]
 
 
