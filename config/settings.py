@@ -14,7 +14,13 @@ SECRET_KEY = 'b+-obg*5qgki!@jfea7k)u3o5&eulj$##ar9flik2e4dp%zgmp'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['sadat-kiaee.ir','127.0.0.1','localhost']
+ALLOWED_HOSTS = [
+    'sadat-kiaee.ir',
+    '127.0.0.1',
+    'localhost',
+    '192.168.42.108',
+    '*'
+]
 
 
 # Application definition

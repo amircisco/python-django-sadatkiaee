@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import Group
 from account.models import User
@@ -65,7 +67,10 @@ class Image(models.Model):
 
 
 class Document(models.Model):
-    user = models.ForeignKey(Insurer,on_delete=models.CASCADE,verbose_name="بیمه گذار")
+    insurer = models.ForeignKey(Insurer,on_delete=models.CASCADE,verbose_name="بیمه گذار")
+    employee = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='employee',
+                                limit_choices_to={'groups__name': 'employee'},verbose_name='ارسال کننده')
+    created_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'مدرک(کارمندان)'
@@ -91,7 +96,7 @@ class InsurerDocument(models.Model):
         ordering = ('-id',)
 
     def __str__(self):
-        return self.user.
+        return self.user
 
 class InsurerDocumentFile(models.Model):
     document = models.ForeignKey(InsurerDocument,on_delete=models.CASCADE)

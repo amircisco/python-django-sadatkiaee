@@ -178,7 +178,7 @@ class DocumentFileInline(admin.TabularInline):
 class DocumentAdmin(admin.ModelAdmin):
     model = Document
     fields = [
-        'user',
+        'insurer',
     ]
     list_display = ['get_user_info']
     list_per_page = 10
@@ -187,7 +187,7 @@ class DocumentAdmin(admin.ModelAdmin):
     ]
 
     def get_user_info(self,obj):
-        insurer = Insurer.objects.get(pk=obj.user.id)
+        insurer = Insurer.objects.get(pk=obj.insurer.id)
         return insurer
     get_user_info.short_description = "اطلاعات بیمه گذار"
 

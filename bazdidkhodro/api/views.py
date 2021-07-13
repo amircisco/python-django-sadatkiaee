@@ -6,6 +6,8 @@ from bazdidkhodro.api.serializers import (
     InsurerShowSerializer,
     InsurerCreateSerializer,
     VisitCreateSerializer,
+    DocumentCreateSerializer,
+    DocumentFileCreateSerializer,
     ImageCreateSerializer,
     VisitShowSerializer,
 )
@@ -28,7 +30,7 @@ class InsurerListAPIView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if self.request.user.groups.filter(name='visitor').exists():
+        if self.request.user.groups.filter(name='visitor').exists() or self.request.user.groups.filter(name='employee').exists():
             return Insurer.objects.all()
         return Insurer.objects.none()
 
@@ -133,6 +135,30 @@ class VisitCreateAPIView(generics.CreateAPIView):
             return Response(status=status.HTTP_200_OK, data={'state':'0','message': 'send incorret data'})
         else:
             return Response(status=status.HTTP_200_OK,data={'state':'0','message': 'you dont have permission...'})
+
+
+
+class DocumentCreateAPIView(generics.CreateAPIView):
+    serializer_class = DocumentCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        if self.request.user.groups.filter(name='employee').exists():
+            request.data['employee'] = request.user.id
+            images = dict((request.data).lists()).get('imgs')
+            document_serializer = DocumentCreateSerializer(data = request.data)
+            if document_serializer.is_valid():
+                document_serializer.save()
+                document_id = document_serializer.data.get("id")
+                for imgByte in images:
+                    document_file_data = {'document':document_id,'file':imgByte}
+                    document_file_serializer = DocumentFileCreateSerializer(data=document_file_data)
+                    if document_file_serializer.is_valid():
+                        document_file_serializer.save()
+                return Response(status=status.HTTP_200_OK, data={'state': '1', 'message': 'document created '})
+        else:
+            return Response(status=status.HTTP_200_OK,data={'state':'0','message': 'you dont have permission...'})
+
 
 
 class VisitListAPIView(generics.ListAPIView):
