@@ -15,9 +15,6 @@ SECRET_KEY = 'b+-obg*5qgki!@jfea7k)u3o5&eulj$##ar9flik2e4dp%zgmp'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'sadat-kiaee.ir',
-    '127.0.0.1',
-    'localhost',
     '*',
 ]
 
@@ -44,6 +41,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'config.middleware.filter_ip_middleware.FilterIPMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'

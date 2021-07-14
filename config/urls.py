@@ -3,7 +3,7 @@ from django.urls import path,include
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView,TokenVerifyView
 from django.conf.urls.static import static
 from django.conf import settings
-from account.views import install
+from account.views import install,home_to_admin
 from django.contrib import admin
 
 
@@ -12,7 +12,7 @@ admin.site.index_title = 'صفحه اصلی'
 admin.site.site_title = 'سادات کیایی'
 
 urlpatterns = [
-    path('', admin.site.urls),
+    path('', home_to_admin,name="home_to_admin"),
     path('admin/', admin.site.urls),
     path('install/', install,name="install"),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

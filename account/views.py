@@ -4,6 +4,11 @@ from django.contrib.auth.models import Permission
 from bazdidkhodro.models import (Image, Insurer, Visit)
 import traceback
 from account.models import Family as Group
+from django.shortcuts import redirect
+
+
+def home_to_admin(request):
+    return redirect('/admin')
 
 
 def install(request):
