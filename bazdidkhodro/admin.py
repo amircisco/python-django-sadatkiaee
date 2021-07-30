@@ -1,6 +1,6 @@
 from django.contrib import admin
 import openpyxl
-from bazdidkhodro.models import (Image, Insurer, Visit, Document, DocumentFile, InsurerDocument, InsurerDocumentFile)
+from bazdidkhodro.models import (Image, Insurer, Visit, Document, DocumentFile, InsurerDocument, InsurerDocumentFile, MenuItems)
 from django.utils.safestring import mark_safe
 from django import forms
 from django.shortcuts import redirect,HttpResponseRedirect,reverse
@@ -249,6 +249,10 @@ class InsurerDocumentAdmin(admin.ModelAdmin):
     get_user_info.short_description = "اطلاعات بیمه گذار"
 
 
+class MenuItemAdmin(admin.ModelAdmin):
+    model = MenuItems
+    fields = ['name', 'link']
+    list_display = ['name']
 
 
 admin.site.register(Visit, VisitAdmin)
@@ -258,5 +262,5 @@ admin.site.register(Document,DocumentAdmin)
 admin.site.register(DocumentFile,DocumentFileAdmin)
 admin.site.register(InsurerDocument,InsurerDocumentAdmin)
 admin.site.register(InsurerDocumentFile,InsurerDocumentFileAdmin)
-
+admin.site.register(MenuItems,MenuItemAdmin)
 

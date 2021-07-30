@@ -98,6 +98,7 @@ class InsurerDocument(models.Model):
     def __str__(self):
         return self.user
 
+
 class InsurerDocumentFile(models.Model):
     document = models.ForeignKey(InsurerDocument,on_delete=models.CASCADE)
     file = models.FileField(upload_to="insurer/documents/%Y/%m/%d",verbose_name="مدرک")
@@ -106,3 +107,14 @@ class InsurerDocumentFile(models.Model):
         verbose_name = 'مدرک'
         verbose_name_plural = 'مدارک'
 
+
+class MenuItems(models.Model):
+    name = models.CharField(max_length=200, verbose_name='نام منو')
+    link = models.CharField(max_length=500, verbose_name='لینک منو')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'منو اپلیکیشن'
+        verbose_name_plural = 'منو های اپلیکیشن'

@@ -1,6 +1,7 @@
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import generics
+from rest_framework.views import APIView
 from bazdidkhodro.models import *
 from bazdidkhodro.api.serializers import (
     InsurerShowSerializer,
@@ -10,6 +11,7 @@ from bazdidkhodro.api.serializers import (
     DocumentFileCreateSerializer,
     ImageCreateSerializer,
     VisitShowSerializer,
+    MenuItemSerializer,
 )
 from account.models import User
 from rest_framework.permissions import IsAuthenticated
@@ -137,7 +139,6 @@ class VisitCreateAPIView(generics.CreateAPIView):
             return Response(status=status.HTTP_200_OK,data={'state':'0','message': 'you dont have permission...'})
 
 
-
 class DocumentCreateAPIView(generics.CreateAPIView):
     serializer_class = DocumentCreateSerializer
     permission_classes = [IsAuthenticated]
@@ -160,7 +161,6 @@ class DocumentCreateAPIView(generics.CreateAPIView):
             return Response(status=status.HTTP_200_OK,data={'state':'0','message': 'you dont have permission...'})
 
 
-
 class VisitListAPIView(generics.ListAPIView):
     serializer_class = VisitShowSerializer
     permission_classes = [IsAuthenticated]
@@ -169,3 +169,11 @@ class VisitListAPIView(generics.ListAPIView):
         if self.request.user.groups.filter(name='visitor').exists():
             return Visit.objects.filter(visitor=self.request.user.id)
         return Visit.objects.none()
+
+
+class MenuItemAPIView(generics.ListAPIView):
+    serializer_class = MenuItemSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return MenuItems.objects.all()

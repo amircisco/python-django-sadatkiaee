@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.utils.representation import serializer_repr
 
-from bazdidkhodro.models import (Image,Insurer,Visit,Document,DocumentFile)
+from bazdidkhodro.models import (Image, Insurer, Visit, Document, DocumentFile, MenuItems)
 from account.models import User
 
 
@@ -56,3 +56,15 @@ class InsurerShowSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'mobile', 'address', 'pelak')
 
 
+class MenuItemSerializer(serializers.ModelSerializer):
+    isLink = serializers.IntegerField(default=1)
+    navigate = serializers.CharField(max_length=2, default='')
+
+    class Meta:
+        model = MenuItems
+        fields = [
+            'name',
+            'link',
+            'isLink',
+            'navigate',
+        ]

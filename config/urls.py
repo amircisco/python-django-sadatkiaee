@@ -1,10 +1,13 @@
 from django.contrib import admin
-from django.urls import path,include
-from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView,TokenVerifyView
+from django.urls import path, include
+# from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView,TokenVerifyView
+from rest_framework_simplejwt.views import TokenVerifyView
+from account.views import TokenObtainPairView, TokenRefreshView
 from django.conf.urls.static import static
 from django.conf import settings
-from account.views import install,home_to_admin
+from account.views import install, home_to_admin
 from django.contrib import admin
+
 
 
 admin.site.site_header = 'پرتال بیمه کوثر نمایندگی سادات کیایی'
