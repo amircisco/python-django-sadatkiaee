@@ -1,6 +1,7 @@
 from django.contrib import admin
 import openpyxl
-from bazdidkhodro.models import (Image, Insurer, Visit, Document, DocumentFile, InsurerDocument, InsurerDocumentFile, MenuItems)
+from bazdidkhodro.models import (Image, Insurer, Visit, Document, DocumentFile, InsurerDocument, InsurerDocumentFile,
+                                 MenuItems, MobileSignal)
 from django.utils.safestring import mark_safe
 from django import forms
 from django.shortcuts import redirect,HttpResponseRedirect,reverse
@@ -255,6 +256,33 @@ class MenuItemAdmin(admin.ModelAdmin):
     list_display = ['name']
 
 
+class MobileSignalAdmin(admin.ModelAdmin):
+    model = MobileSignal
+    list_display = ['menu', 'user', 'get_action', 'enter_date', 'get_leave_date', 'get_stay']
+    list_per_page = 10
+
+    def get_action(self,obj):
+        ac = "ورود"
+        if obj.action == "leave":
+            ac = "خروج"
+        return ac
+    get_action.short_description = 'نوع'
+
+    def get_leave_date(self,obj):
+        is_online = "آنلاین"
+        if obj.leave_date != None :
+            is_online = obj.leave_date
+        return is_online
+    get_leave_date.short_description = "خروج"
+
+    def get_stay(self,obj):
+        stay = ""
+        if obj.leave_date != None:
+            stay = str(obj.leave_date - obj.enter_date).split('.')[0]
+        return stay
+    get_stay.short_description = "مدت ماندن"
+
+
 admin.site.register(Visit, VisitAdmin)
 admin.site.register(Insurer,InsurerAdmin)
 admin.site.register(Image,ImageAdmin)
@@ -263,4 +291,4 @@ admin.site.register(DocumentFile,DocumentFileAdmin)
 admin.site.register(InsurerDocument,InsurerDocumentAdmin)
 admin.site.register(InsurerDocumentFile,InsurerDocumentFileAdmin)
 admin.site.register(MenuItems,MenuItemAdmin)
-
+admin.site.register(MobileSignal,MobileSignalAdmin)

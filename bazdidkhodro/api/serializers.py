@@ -1,7 +1,9 @@
+from dataclasses import fields
+
 from rest_framework import serializers
 from rest_framework.utils.representation import serializer_repr
 
-from bazdidkhodro.models import (Image, Insurer, Visit, Document, DocumentFile, MenuItems)
+from bazdidkhodro.models import (Image, Insurer, Visit, Document, DocumentFile, MenuItems, MobileSignal)
 from account.models import User
 
 
@@ -63,8 +65,16 @@ class MenuItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = MenuItems
         fields = [
+            'id',
             'name',
             'link',
             'isLink',
             'navigate',
         ]
+
+
+class MobileSignalSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MobileSignal
+        fields = ['menu', 'user', 'action', 'enter_date', 'leave_date']

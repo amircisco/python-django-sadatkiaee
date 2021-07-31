@@ -5,6 +5,7 @@ from django.contrib.auth.models import Group
 from account.models import User
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 
 class Insurer(models.Model):
@@ -118,3 +119,16 @@ class MenuItems(models.Model):
     class Meta:
         verbose_name = 'منو اپلیکیشن'
         verbose_name_plural = 'منو های اپلیکیشن'
+        ordering = ('-id',)
+
+
+class MobileSignal(models.Model):
+    menu = models.ForeignKey(MenuItems, on_delete=models.DO_NOTHING, verbose_name='لینک وارد شده')
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name="کاربر")
+    action = models.CharField(max_length=25, verbose_name='نوع')
+    enter_date = models.DateTimeField(default=timezone.now, verbose_name=' ورود')
+    leave_date = models.DateTimeField(default=None, blank=True, null=True, verbose_name=' خروج')
+
+    class Meta:
+        verbose_name = 'فعالیت کارمند'
+        verbose_name_plural = 'فعالیت های کارمندان'

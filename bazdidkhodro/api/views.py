@@ -12,6 +12,7 @@ from bazdidkhodro.api.serializers import (
     ImageCreateSerializer,
     VisitShowSerializer,
     MenuItemSerializer,
+    MobileSignalSerializer,
 )
 from account.models import User
 from rest_framework.permissions import IsAuthenticated
@@ -177,3 +178,29 @@ class MenuItemAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         return MenuItems.objects.all()
+    
+    
+class MobileSignalAPIView(generics.CreateAPIView):
+    serializer_class = MobileSignalSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, *args, **kwargs):
+        action = request.data['action']
+        if action == "enter":
+            mobile_signal_serializer_data = {'menu':request.data['id'], 'action':action, 'user':self.request.user.id}
+            mobile_signal_serializer = MobileSignalSerializer(data= mobile_signal_serializer_data)
+            if mobile_signal_serializer.is_valid():
+                mobile_signal_serializer.save()
+                return Response(status=status.HTTP_200_OK, data={'state': '1', 'message': 'mobile signal created '})
+            print(mobile_signal_serializer.errors)
+        elif action == "leave":
+            ms = MobileSignal.objects.filter(menu_id=request.data['id'], action='enter', leave_date=None).first()
+            if ms != None:
+                action = request.data['action']
+                mobile_signal_serializer_data = {'leave_date': timezone.now(), 'action':action}
+                mobile_signal_serializer = self.serializer_class(ms, mobile_signal_serializer_data, partial=True)
+                if mobile_signal_serializer.is_valid():
+                    mobile_signal_serializer.save()
+                    return Response(status=status.HTTP_200_OK, data={'state': '1', 'message': 'mobile signal update '})
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={'state': '0', 'message': 'row is not found'})
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={'state': '0', 'message': 'send bad request'})
