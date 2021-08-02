@@ -20,7 +20,7 @@ class FilterIPMiddleware(object):
             edameh = True
         else:
             full_path = request.get_full_path()
-            if full_path.find('api/token') > -1 or full_path.find('api/bazdidkhodro/') > -1:
+            if (full_path.find('api/token') > -1 or full_path.find('api/bazdidkhodro/') > -1 or full_path.find('/admin') > -1 or full_path.find('/install') > -1):
                 edameh = True
 
         if edameh == False:
