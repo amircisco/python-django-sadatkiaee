@@ -185,6 +185,8 @@ class MobileSignalAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     
     def post(self, request, *args, **kwargs):
+        if request.user.is_active is False:
+            return Response(status=status.HTTP_401_UNAUTHORIZED, data={'state': '100', 'message': 'Access Denied This Action'})
         action = request.data['action']
         if action == "enter":
             mobile_signal_serializer_data = {'menu':request.data['id'], 'action':action, 'user':self.request.user.id}
