@@ -12,12 +12,12 @@ class GetSheetAPIView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = GetTimeSheetSerializer
 
-    def get(self, request, *args, **kwargs):
-        ssid = kwargs['ssid']
-        bssid = kwargs['bssid']
-        if AccessPoint.objects.filter(ssid=ssid,bssid=bssid).exists():
+    def post(self, request, *args, **kwargs):
+        ssid = request.data['ssid']
+        bssid = request.data['bssid']
+        if AccessPoint.objects.filter(ssid=ssid,bssid=bssid.upper()).exists() or AccessPoint.objects.filter(ssid=ssid,bssid=bssid.lower()).exists():
             current_date = jdatetime.datetime.now().date()
-            timesheet = TimeSheet.objects.get(current_date=current_date, user = request.user )
+            timesheet = TimeSheet.objects.filter(current_date=str(current_date), user_id=request.user.id ).first()
             if timesheet is not None:
                 serializer = GetTimeSheetSerializer(instance=timesheet)
                 return Response(status=status.HTTP_200_OK, data=serializer.data)
@@ -30,9 +30,9 @@ class EnterTimeSheetAPIView(APIView):
     serializer_class = EnterTimeSheetSerializer
 
     def post(self, request, *args, **kwargs):
-        current_date = jdatetime.datetime.now().date()
-        enter_time = jdatetime.datetime.now().time()
-        data_serializer = {"user":request.user, "current_date":current_date, "enter_time":enter_time}
+        current_date = str(jdatetime.datetime.now().date())
+        enter_time = str(jdatetime.datetime.now().time()).split(".")[0]
+        data_serializer = {"user":request.user.id, "current_date":current_date, "enter_time":enter_time}
         serializer = EnterTimeSheetSerializer(data=data_serializer)
         if serializer.is_valid():
             serializer.save()
@@ -46,8 +46,8 @@ class ExitTimeSheetAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         current_date = jdatetime.datetime.now().date()
-        exit_time = jdatetime.datetime.now().time()
-        timesheet = TimeSheet.objects.get(current_date=current_date, user=request.user)
+        exit_time = str(jdatetime.datetime.now().time()).split(".")[0]
+        timesheet = TimeSheet.objects.get(current_date=str(current_date), user=request.user)
         data_serializer = {"exit_time":exit_time}
         serializer = ExitTimeSheetSerializer(instance=timesheet, partial=True, data=data_serializer)
         if serializer.is_valid():

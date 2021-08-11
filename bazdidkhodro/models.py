@@ -34,10 +34,8 @@ class Visit(models.Model):
     visitor = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='visitor',
                                 limit_choices_to={'groups__name': 'visitor'},verbose_name='بازدید کننده')
     year = models.CharField(verbose_name="سال", choices=year_choices, max_length=4, default='1400')
-    #create_date = models.DateTimeField(auto_now_add=True)
-    create_date = jmodels.jDateTimeField(default=jdatetime.datetime.now)
-    #update_date = models.DateTimeField(auto_now=True)
-    update_date = jmodels.jDateTimeField(default=jdatetime.datetime.now)
+    create_date = models.DateTimeField(default=jdatetime.datetime.now)
+    update_date = models.DateTimeField(default=jdatetime.datetime.now)
     finished = models.BooleanField(verbose_name="اتمام",default=False)
 
     @property
@@ -75,7 +73,7 @@ class Document(models.Model):
     employee = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='employee',
                                 limit_choices_to={'groups__name': 'employee'},verbose_name='ارسال کننده')
     #created_date = models.DateTimeField(auto_now_add=True)
-    created_date = jmodels.jDateTimeField(default=jdatetime.datetime.now)
+    created_date = models.DateTimeField(default=jdatetime.datetime.now)
     class Meta:
         verbose_name = 'مدرک(کارمندان)'
         verbose_name_plural = 'مدارک(کارمندان)'
@@ -131,8 +129,8 @@ class MobileSignal(models.Model):
     action = models.CharField(max_length=25, verbose_name='نوع')
     #enter_date = models.DateTimeField(default=timezone.now, verbose_name=' ورود')
     #leave_date = models.DateTimeField(default=None, blank=True, null=True, verbose_name=' خروج')
-    enter_date = jmodels.jDateTimeField(default=jdatetime.datetime.now, verbose_name=' ورود')
-    leave_date = jmodels.jDateTimeField(default=None, blank=True, null=True, verbose_name=' خروج')
+    enter_date = models.DateTimeField(default=jdatetime.datetime.now, verbose_name=' ورود')
+    leave_date = models.DateTimeField(default=None, blank=True, null=True, verbose_name=' خروج')
 
     class Meta:
         verbose_name = 'فعالیت کارمند'

@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
 from django_jalali.db import models as jmodels
 import jdatetime
+from django.utils import timezone
 
 
 class UserManager(BaseUserManager):
@@ -38,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     mobile = models.CharField(max_length=255,unique=True,verbose_name="شماره موبایل")
     password = models.CharField(max_length=1000,verbose_name="رمز عبور")
     #date_joined = models.DateTimeField(auto_now_add=True,verbose_name="تاریخ ثبت در سیستم")
-    date_joined = jmodels.jDateTimeField(default=jdatetime.datetime.now, verbose_name="تاریخ ثبت در سیستم")
+    date_joined = models.DateTimeField(default=timezone.now, verbose_name="تاریخ ثبت در سیستم")
     USERNAME_FIELD = 'mobile'
     REQUIRED_FIELDS = ['password','username']
 
