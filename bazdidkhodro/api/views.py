@@ -23,9 +23,9 @@ from django.contrib.auth.models import Group
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
-from datetime import datetime
 from django.http.request import QueryDict
 import traceback
+from jdatetime import datetime
 
 
 class InsurerListAPIView(generics.ListAPIView):

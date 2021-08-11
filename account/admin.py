@@ -9,8 +9,8 @@ from django.db.models import Q
 
 class UserAdmin(admin.ModelAdmin):
     model = User
-    fields = ['mobile', 'username', 'groups', 'password','is_active','is_staff','is_superuser','email']
-    list_display = ['username', 'mobile','level']
+    fields = ['mobile', 'username', 'groups', 'password', 'is_active', 'is_staff', 'is_superuser', 'email', ]
+    list_display = ['username', 'mobile', 'level', ]
     form = UserChangeForm
     add_form = UserCreationForm
 
@@ -24,7 +24,7 @@ class UserAdmin(admin.ModelAdmin):
 
 class FamilyAdmin(admin.ModelAdmin):
     model = Family
-    fields = ['name','permissions']
+    fields = ['name', 'permissions']
     list_display = ['get_name']
 
     def get_name(self,obj):
