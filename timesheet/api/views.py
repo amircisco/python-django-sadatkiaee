@@ -1,9 +1,10 @@
+import json
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from timesheet.models import TimeSheet,AccessPoint
 import jdatetime
-from .serializers import GetTimeSheetSerializer,EnterTimeSheetSerializer,ExitTimeSheetSerializer
+from .serializers import GetTimeSheetSerializer, EnterTimeSheetSerializer, ExitTimeSheetSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -19,9 +20,13 @@ class GetSheetAPIView(APIView):
             current_date = jdatetime.datetime.now().date()
             timesheet = TimeSheet.objects.filter(current_date=str(current_date), user_id=request.user.id ).first()
             if timesheet is not None:
-                serializer = GetTimeSheetSerializer(instance=timesheet)
-                return Response(status=status.HTTP_200_OK, data=serializer.data)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+                if len(str(timesheet.exit_time)) == 0:
+                    serializer = GetTimeSheetSerializer(instance=timesheet)
+                    return Response(status=status.HTTP_200_OK, data=serializer.data)
+                elif len(str(timesheet.exit_time)) > 0:
+                    return Response(status=status.HTTP_204_NO_CONTENT)
+
+            return Response(status=status.HTTP_202_ACCEPTED,data={"current_date":str(current_date)})
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
