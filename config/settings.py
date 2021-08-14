@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'bazdidkhodro.apps.BazdidkhodroConfig',
     'timesheet.apps.TimesheetConfig',
-    'documentarchive.apps.DocumentarchiveConfig',
     'rest_framework',
 ]
 

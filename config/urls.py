@@ -22,5 +22,4 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('api/bazdidkhodro/', include('bazdidkhodro.api.urls')),
     path('api/timesheet/', include('timesheet.api.urls')),
-    path('api/documentarchive/', include('documentarchive.api.urls')),
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
