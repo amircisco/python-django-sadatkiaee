@@ -46,7 +46,7 @@ class TimeSheetProxy(TimeSheet):
 class TimeSheetAdminReport(TimeSheetAdmin):
     list_display = [
         'user',
-        'current_date',
+        'get_current_date',
         'enter_time',
         'exit_time',
         'majmoo',
@@ -54,6 +54,11 @@ class TimeSheetAdminReport(TimeSheetAdmin):
     search_fields = ['current_date']
     list_filter = ['user']
     actions = ['export_csv']
+
+    def get_current_date(self,obj):
+        arr_cur = str(obj.current_date).split("-")
+        return arr_cur[0]+"-"+arr_cur[1]+"-"+arr_cur[2]
+    get_current_date.short_description = "تاریخ"
 
     def export_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')
