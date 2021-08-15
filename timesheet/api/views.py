@@ -20,10 +20,10 @@ class GetSheetAPIView(APIView):
             current_date = jdatetime.datetime.now().date()
             timesheet = TimeSheet.objects.filter(current_date=str(current_date), user_id=request.user.id ).first()
             if timesheet is not None:
-                if len(str(timesheet.exit_time)) == 0:
+                if timesheet.exit_time is None:
                     serializer = GetTimeSheetSerializer(instance=timesheet)
                     return Response(status=status.HTTP_200_OK, data=serializer.data)
-                elif len(str(timesheet.exit_time)) > 0:
+                elif timesheet.exit_time is not None:
                     return Response(status=status.HTTP_204_NO_CONTENT)
 
             return Response(status=status.HTTP_202_ACCEPTED,data={"current_date":str(current_date)})

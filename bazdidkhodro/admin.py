@@ -258,8 +258,15 @@ class MenuItemAdmin(admin.ModelAdmin):
 
 class MobileSignalAdmin(admin.ModelAdmin):
     model = MobileSignal
-    list_display = ['menu', 'user', 'get_action', 'enter_date', 'get_leave_date', 'get_stay']
+    list_display = ['menu', 'user', 'get_action', 'get_enter_date', 'get_leave_date', 'get_stay']
     list_per_page = 10
+    search_fields = ['enter_date']
+    list_filter = ["action","user__username"]
+
+    def get_enter_date(self, obj):
+        print(obj.enter_date)
+        return str(obj.enter_date).split("+")[0]
+    get_enter_date.short_description = "تاریخ ورود"
 
     def get_action(self,obj):
         ac = "ورود"
