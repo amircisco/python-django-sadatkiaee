@@ -76,18 +76,18 @@ class TimeSheetAdminReport(admin.ModelAdmin):
     get_current_date.short_description = "تاریخ"
 
     def export_csv(self, request, queryset):
-        if request.user.is_superuser:
-            response = HttpResponse(content_type='text/csv')
-            response['Content-disposition'] = 'attachment; filename="timesheet.csv"'
-            writer = csv.writer(response)
-            writer.writerow(['نام کارمند', 'تاریخ', 'ساعت ورود', 'ساعت خروج', 'مجموع'])
-            books = queryset.values_list('user__username', 'current_date', 'enter_time', 'exit_time')
-            for book in books:
-                majmoo = calc_majmoo(book[3],book[2])
-                new_book = book + (majmoo,)
-                writer.writerow(new_book)
-            return response
-        return None
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-disposition'] = 'attachment; filename="timesheet.csv"'
+        writer = csv.writer(response)
+        writer.writerow(['نام کارمند', 'تاریخ', 'ساعت ورود', 'ساعت خروج', 'مجموع'])
+        books = queryset.values_list('user__username', 'current_date', 'enter_time', 'exit_time')
+        for book in books:
+            majmoo = calc_majmoo(book[3],book[2])
+            new_book = book + (majmoo,)
+            writer.writerow(new_book)
+        return response
+
     export_csv.short_description = "خروجی اکسل"
 
     def has_add_permission(self, request):
@@ -105,6 +105,8 @@ class AccessPointAdmin(admin.ModelAdmin):
     fields = [
         'ssid',
         'bssid',
+        'ip',
+        'subnet',
         'status',
     ]
     list_display = [

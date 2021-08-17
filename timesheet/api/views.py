@@ -7,18 +7,42 @@ import jdatetime
 from .serializers import GetTimeSheetSerializer, EnterTimeSheetSerializer, ExitTimeSheetSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from django.conf import settings as config_setting
 
 
 class GetSheetAPIView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = GetTimeSheetSerializer
 
+    def get_client_ip(self,request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+
+
     def post(self, request, *args, **kwargs):
-        ssid = request.data['ssid']
-        bssid = request.data['bssid']
-        if AccessPoint.objects.filter(ssid=ssid,bssid=bssid.upper()).exists() or AccessPoint.objects.filter(ssid=ssid,bssid=bssid.lower()).exists():
+        details = request.data['details']
+        edame = False
+        if details["bssid"] == "02:00:00:00:00:00":
+            arr_ip = details["ipAddress"].split(".")
+            ip = arr_ip[0]+"."+arr_ip[1]+"."+arr_ip[2]+".1"
+            if config_setting.ACCESSPOINT_IP_CHECK:
+                client_ip = self.get_client_ip(request)
+                if AccessPoint.objects.filter(ip=ip,subnet=details["subnet"]).exists() and config_setting.ACCESSPOINT_IP in client_ip:
+                    edame = True
+            else:
+                if AccessPoint.objects.filter(ip=ip,subnet=details["subnet"]).exists():
+                    edame = True
+        else:
+            if AccessPoint.objects.filter(ssid=details["ssid"],bssid=details["bssid"].upper()).exists() or AccessPoint.objects.filter(ssid=details["ssid"],bssid=details["bssid"].lower()).exists():
+                edame = True
+
+        if edame == True:
             current_date = jdatetime.datetime.now().date()
-            timesheet = TimeSheet.objects.filter(current_date=str(current_date), user_id=request.user.id ).first()
+            timesheet = TimeSheet.objects.filter(current_date=str(current_date), user_id=request.user.id).first()
             if timesheet is not None:
                 if timesheet.exit_time is None:
                     serializer = GetTimeSheetSerializer(instance=timesheet)
@@ -26,7 +50,7 @@ class GetSheetAPIView(APIView):
                 elif timesheet.exit_time is not None:
                     return Response(status=status.HTTP_204_NO_CONTENT)
 
-            return Response(status=status.HTTP_202_ACCEPTED,data={"current_date":str(current_date)})
+            return Response(status=status.HTTP_202_ACCEPTED, data={"current_date": str(current_date)})
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 

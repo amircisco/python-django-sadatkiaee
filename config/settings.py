@@ -149,3 +149,5 @@ import pymysql
 
 pymysql.install_as_MySQLdb()
 
+ACCESSPOINT_IP = "5."
+ACCESSPOINT_IP_CHECK = True

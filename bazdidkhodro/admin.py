@@ -278,7 +278,7 @@ class MobileSignalAdmin(admin.ModelAdmin):
     def get_leave_date(self,obj):
         is_online = "آنلاین"
         if obj.leave_date != None :
-            is_online = obj.leave_date
+            is_online = str(obj.leave_date).split("+")[0]
         return is_online
     get_leave_date.short_description = "خروج"
 

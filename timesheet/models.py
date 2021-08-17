@@ -23,6 +23,8 @@ class TimeSheet(models.Model):
 class AccessPoint(models.Model):
     ssid = models.CharField(max_length=100, verbose_name="نام شبکه وایرلس روتر")
     bssid = models.CharField(max_length=100, verbose_name="مک آدرس روتر")
+    ip = models.CharField(max_length=100, verbose_name="آدرس آیپی روتر")
+    subnet = models.CharField(max_length=100, verbose_name="آدرس سابنت روتر")
     status = models.BooleanField(default=True, verbose_name="وضعیت")
 
     def __str__(self):

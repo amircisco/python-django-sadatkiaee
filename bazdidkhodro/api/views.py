@@ -189,7 +189,9 @@ class MobileSignalAPIView(generics.CreateAPIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED, data={'state': '100', 'message': 'Access Denied This Action'})
         action = request.data['action']
         if action == "enter":
-            mobile_signal_serializer_data = {'menu':request.data['id'], 'action':action, 'user':self.request.user.id}
+            now_date_time = str(jdatetime.datetime.now())
+            now_date_time = now_date_time.split(" ")[0]+" "+now_date_time.split(" ")[1].split(".")[0]
+            mobile_signal_serializer_data = {'menu':request.data['id'], 'action':action, 'user':self.request.user.id, "enter_date":now_date_time}
             mobile_signal_serializer = MobileSignalSerializer(data= mobile_signal_serializer_data)
             if mobile_signal_serializer.is_valid():
                 mobile_signal_serializer.save()
@@ -199,7 +201,9 @@ class MobileSignalAPIView(generics.CreateAPIView):
             ms = MobileSignal.objects.filter(menu_id=request.data['id'], action='enter', leave_date=None).first()
             if ms != None:
                 action = request.data['action']
-                mobile_signal_serializer_data = {'leave_date': timezone.now(), 'action':action}
+                now_date_time = str(jdatetime.datetime.now())
+                now_date_time = now_date_time.split(" ")[0] + " " + now_date_time.split(" ")[1].split(".")[0]
+                mobile_signal_serializer_data = {'leave_date': now_date_time, 'action':action}
                 mobile_signal_serializer = self.serializer_class(ms, mobile_signal_serializer_data, partial=True)
                 if mobile_signal_serializer.is_valid():
                     mobile_signal_serializer.save()
