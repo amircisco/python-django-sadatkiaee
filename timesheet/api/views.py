@@ -25,6 +25,8 @@ class GetSheetAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         details = request.data['details']
+        if "ssid" in details and str(details["ssid"]).__len__() == 0:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         edame = False
         if details["bssid"] == "02:00:00:00:00:00":
             arr_ip = details["ipAddress"].split(".")

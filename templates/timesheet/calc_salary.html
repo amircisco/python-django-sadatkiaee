@@ -1,0 +1,119 @@
+{% load curency %}
+
+<center><a href="#" id="test" onClick="javascript:fnExcelReport();">دریافت فایل اکسل</a></center>
+<br>
+<table border="1"  id="myTable">
+    <tr>
+        <th>مجموع</th>
+        <th>ساعت خروج</th>
+        <th>ساعت ورود</th>
+        <th>تاریخ</th>
+        <th>نام</th>
+    </tr>
+    {% for row in all_work_timesheet %}
+        <tr>
+            <td>{% remove_second row.duration %}</td>
+            <td>{{ row.exit_time }}</td>
+            <td>{{ row.enter_time }}</td>
+            <td>{% get_jdatetime row.current_date %}</td>
+            <td>{{ employee_name }}</td>
+        </tr>
+    {% endfor %}
+    <tr></tr><tr></tr>
+
+
+    <tr>
+        <th>سهم کارمند</th>
+        <th>مبلغ پورسانت</th>
+        <th>تعداد</th>
+        <th>نام</th>
+    </tr>
+    {% for row in list_commission_amount %}
+        <tr>
+            <td>{% comma_rial row.last %}</td>
+            <td>{% comma_rial row.amount %}</td>
+            <td>{{ row.count }}</td>
+            <td>{{ row.name }}</td>
+        </tr>
+    {% endfor %}
+    <tr></tr><tr></tr>
+
+
+    <tr>
+        <th>سهم کامند</th>
+        <th>درصد پورسانت</th>
+        <th>کل پورسانت ها</th>
+        <th>نام</th>
+    </tr>
+    {% for row in list_commission_percentage %}
+        <tr>
+            <td>{% comma_rial row.last %}</td>
+            <td>{{ row.percentage }}</td>
+            <td>{% comma_rial row.sum %}</td>
+            <td>{{ row.name }}</td>
+        </tr>
+    {% endfor %}
+    <tr></tr><tr></tr><tr></tr>
+
+
+
+    <tr>
+        <th>مجموع حقوق</th>
+        <th>مجموع پورسانت های درصدی</th>
+        <th>مجموع پورسانت های مبلغی</th>
+        <th>مجموع دستمزد ساعت کاری</th>
+        <th>مجموع ساعت کاری</th>
+        <th>تا تاریخ</th>
+        <th>از تاریخ</th>
+        <th>نام</th>
+    </tr>
+    <tr>
+        <td>{% comma_rial majmoo  %}</td>
+        <td>{% comma_rial last_percentage %}</td>
+        <td>{% comma_rial last_amount %}</td>
+        <td>{% comma_rial last_work %}</td>
+        <td>{{ hours }}:{{ minutes }}</td>
+        <td>{{ to_date }}</td>
+        <td>{{ from_date }}</td>
+        <td>{{ employee_name }}</td>
+    </tr>
+
+
+</table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+
+function fnExcelReport() {
+    var tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+    tab_text = tab_text + '<head><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+
+    tab_text = tab_text + '<x:Name>{{employee_name}}</x:Name>';
+
+    tab_text = tab_text + '<x:WorksheetOptions><x:Panes></x:Panes></x:WorksheetOptions></x:ExcelWorksheet>';
+    tab_text = tab_text + '</x:ExcelWorksheets></x:ExcelWorkbook></xml></head><body>';
+
+    tab_text = tab_text + "<table border='1px'>";
+    tab_text = tab_text + $('#myTable').html();
+    tab_text = tab_text + '</table></body></html>';
+
+    var data_type = 'data:application/vnd.ms-excel';
+
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf("MSIE ");
+
+    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+        if (window.navigator.msSaveBlob) {
+            var blob = new Blob([tab_text], {
+                type: "application/csv;charset=utf-8;"
+            });
+            navigator.msSaveBlob(blob, 'Test file.xls');
+        }
+    } else {
+        $('#test').attr('href', data_type + ', ' + encodeURIComponent(tab_text));
+        $('#test').attr('download', '{{employee_mobile}}.xls');
+    }
+
+}
+
+    </script>

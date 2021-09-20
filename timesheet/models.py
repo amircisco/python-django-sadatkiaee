@@ -3,7 +3,7 @@ from account.models import User
 from account.models import Family as groups
 from django_jalali.db import models as jmodels
 from django.utils import timezone
-import jdatetime
+from django.template.defaultfilters import slugify
 
 
 class TimeSheet(models.Model):
@@ -33,3 +33,54 @@ class AccessPoint(models.Model):
     class Meta:
         verbose_name = "تنظیمات روتر"
         verbose_name_plural = "تنظیمات روترها"
+
+
+class Commission(models.Model):
+    name = models.CharField(max_length=200, verbose_name="نام پورسانت")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        abstract = True
+
+
+class CommissionAmount(Commission):
+    amount = models.CharField(max_length=50, default=0, verbose_name="مبلغ")
+    @property
+    def commaamount(self):
+        return "{:,.0f}".format(float(self.amount))
+
+    class Meta:
+        verbose_name = "پورسانت مبلغی"
+        verbose_name_plural = "پورسانت ها مبلغی"
+
+
+class CommissionPercentage(Commission):
+    percentage = models.CharField(max_length=50, default=0, verbose_name="درصد")
+
+    class Meta:
+        verbose_name = "پورسانت درصدی"
+        verbose_name_plural = "پورسانت ها درصدی"
+
+
+class SalarySetting(models.Model):
+    worktime = models.IntegerField(unique=True, verbose_name="حداکثر ساعت کاری", default=176)
+    extraworktime = models.IntegerField(unique=True, verbose_name="حداکثر ساعت اضافه کاری", default=120)
+    workamount = models.CharField(max_length=50, unique=True, verbose_name="دستمزد یک ساعت کاری", default=80000)
+    extraworkamount = models.CharField(max_length=50, unique=True, verbose_name="دستمزد یک ساعت اضافه کاری", default=170000)
+
+    @property
+    def commaworkamount(self):
+        return "{:,.0f}".format(float(self.workamount))
+
+    @property
+    def commaextraforkamount(self):
+        return "{:,.0f}".format(self.extraworkamount)
+
+    def verbose_name(self,fieldname):
+        return self._meta.get_field(fieldname).verbose_name
+
+    class Meta:
+        verbose_name = "تنظمیات حقوق"
+        verbose_name_plural = "تنظیمات حقوق"

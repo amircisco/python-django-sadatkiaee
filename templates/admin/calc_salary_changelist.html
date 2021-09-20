@@ -1,0 +1,28 @@
+
+
+{% extends "admin/base_site.html" %}
+{% block title %}
+    {{ page_title }}
+{% endblock %}
+
+{% block content %}
+    <form action="/admin/timesheet/calc_salary" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="گزارش گیری" />
+    </form>
+
+    <script>
+        var flg = false;
+        var arr = document.getElementsByClassName("rowfield");
+        for(var i=0;i<arr.length;i++){
+            var item = arr[i];
+            var parent = item.parentNode;
+            if(flg==false){
+                flg = true;
+                parent.previousElementSibling.previousElementSibling.style.marginTop = "50px";
+            }
+            parent.style.marginBottom = "50px";
+        }
+    </script>
+{% endblock %}

@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from account.views import home_to_admin
 from django.contrib import admin
+from timesheet.views import calc_salary
 
 
 admin.site.site_header = 'پرتال بیمه کوثر نمایندگی سادات کیایی'
@@ -16,6 +17,7 @@ admin.site.site_title = 'سادات کیایی'
 
 urlpatterns = [
     path('', home_to_admin,name="home_to_admin"),
+    path('admin/timesheet/calc_salary', calc_salary ,name="calc_salary"),
     path('admin/', admin.site.urls),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
