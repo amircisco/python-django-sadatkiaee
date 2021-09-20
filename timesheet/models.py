@@ -1,9 +1,5 @@
 from django.db import models
 from account.models import User
-from account.models import Family as groups
-from django_jalali.db import models as jmodels
-from django.utils import timezone
-from django.template.defaultfilters import slugify
 
 
 class TimeSheet(models.Model):
@@ -47,6 +43,7 @@ class Commission(models.Model):
 
 class CommissionAmount(Commission):
     amount = models.CharField(max_length=50, default=0, verbose_name="مبلغ")
+
     @property
     def commaamount(self):
         return "{:,.0f}".format(float(self.amount))
