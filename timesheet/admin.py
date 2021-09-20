@@ -97,8 +97,8 @@ class CalcSalaryTimeSheetAdmin(admin.ModelAdmin):
                  {"page_title":"محاسبه حقوق و دستمزد", "form":form},
                  name='{}_{}_changelist'.format(
             self.model._meta.app_label, self.model._meta.model_name)),
-            path('calc_salary_add/', TemplateView.as_view(template_name="admin/calc_salary_add.html"),
-                 {"page_title": "محاسبه حقوق و دستمزد"},
+            path('calc_salary_add/', TemplateView.as_view(template_name="admin/calc_salary_changelist.html"),
+                 {"page_title":"محاسبه حقوق و دستمزد", "form":form},
                  name='{}_{}_add'.format(
                      self.model._meta.app_label, self.model._meta.model_name)),
         ]
