@@ -15,13 +15,13 @@
             <td>{% remove_second row.duration %}</td>
             <td>{{ row.exit_time }}</td>
             <td>{{ row.enter_time }}</td>
-            <td>{% get_jdatetime row.current_date %}</td>
+            <td>{{ row.current_date_jalali }}</td>
             <td>{{ employee_name }}</td>
         </tr>
     {% endfor %}
     <tr></tr><tr></tr>
 
-
+    {% if list_commission_amount %}
     <tr>
         <th>سهم کارمند</th>
         <th>مبلغ پورسانت</th>
@@ -37,8 +37,10 @@
         </tr>
     {% endfor %}
     <tr></tr><tr></tr>
+    {% endif %}
 
 
+    {% if list_commission_percentage %}
     <tr>
         <th>سهم کامند</th>
         <th>درصد پورسانت</th>
@@ -54,15 +56,16 @@
         </tr>
     {% endfor %}
     <tr></tr><tr></tr><tr></tr>
-
+    {% endif %}
 
 
     <tr>
         <th>مجموع حقوق</th>
-        <th>مجموع پورسانت های درصدی</th>
-        <th>مجموع پورسانت های مبلغی</th>
-        <th>مجموع دستمزد ساعت کاری</th>
-        <th>مجموع ساعت کاری</th>
+        <th> پورسانت های درصدی</th>
+        <th> پورسانت های مبلغی</th>
+        <th> دستمزد ساعت کاری</th>
+        <th> ساعت اضافه کاری</th>
+        <th> ساعت کاری</th>
         <th>تا تاریخ</th>
         <th>از تاریخ</th>
         <th>نام</th>
@@ -72,9 +75,10 @@
         <td>{% comma_rial last_percentage %}</td>
         <td>{% comma_rial last_amount %}</td>
         <td>{% comma_rial last_work %}</td>
+        <td>{{ extra_hours }}</td>
         <td>{{ hours }}:{{ minutes }}</td>
-        <td>{{ to_date }}</td>
-        <td>{{ from_date }}</td>
+        <td>{{ jto_date }}</td>
+        <td>{{ jfrom_date }}</td>
         <td>{{ employee_name }}</td>
     </tr>
 

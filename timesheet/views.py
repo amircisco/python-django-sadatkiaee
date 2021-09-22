@@ -1,4 +1,3 @@
-import extra as extra
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import TimeSheet, SalarySetting
@@ -9,19 +8,23 @@ from account.models import User
 def calc_salary(request):
     employee = request.POST["employee"]
     employee_info = User.objects.get(id=employee)
-    from_date = request.POST['from_date']
-    to_date = request.POST['to_date']
+    jfrom_date = request.POST['from_date']
+    from_date = TimeSheet.gcurrent_date(jfrom_date)
+    jto_date = request.POST['to_date']
+    to_date = TimeSheet.gcurrent_date(jto_date)
+    dinnertime = int(request.POST["dinnertime"])
     worktime = float(request.POST['worktime'])
     extraworktime = float(request.POST['extraworktime'])
     workamount = float(request.POST['workamount'])
     extraworkamount =float(request.POST['extraworkamount'])
-    qs = TimeSheet.objects.filter(user=employee,current_date__range=(from_date,to_date))
+    qs = TimeSheet.objects.filter(user=employee, exit_time__isnull=False, current_date__range=(from_date,to_date)).order_by('current_date')
     duration = ExpressionWrapper(F('exit_time') - F('enter_time'), output_field=fields.DurationField())
     all_work_timesheet = qs = qs.annotate(duration=duration)
     qs = qs.aggregate(sumwork=Sum('duration'))
     seconds = qs["sumwork"].total_seconds()
-    hours = int(seconds // 3600)
+    hours = int(seconds // 3600) - dinnertime
     minutes = int((seconds % 3600) // 60)
+    extra_hours = 0
 
     if hours == worktime:
         amount = hours * workamount
@@ -29,10 +32,11 @@ def calc_salary(request):
         last_work = int(amount + extraamount)
     elif hours > worktime:
         amount = worktime * workamount
-        part1 = (hours - worktime) * extraworkamount
+        part1 = extraworktime if (hours - worktime) > extraworktime else (hours - worktime)  * extraworkamount
         part2 = int((((minutes * 100) / 60) * extraworkamount) / 100)
         extraamount = part1 + part2
         last_work = int(amount + extraamount)
+        extra_hours = int(hours - worktime)
     elif hours < worktime:
         part1 = hours * workamount
         part2 = int((((minutes * 100) / 60) * workamount) / 100)
@@ -75,9 +79,10 @@ def calc_salary(request):
         "minutes":minutes,
         "employee_name":employee_info.username,
         "employee_mobile": employee_info.mobile,
-        "from_date":from_date,
-        "to_date":to_date,
+        "jfrom_date":jfrom_date,
+        "jto_date":jto_date,
         "all_work_timesheet":all_work_timesheet,
         "list_commission_amount":list_commission_amount,
         "list_commission_percentage":list_commission_percentage,
+        "extra_hours":extra_hours,
     })

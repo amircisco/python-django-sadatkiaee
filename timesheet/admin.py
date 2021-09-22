@@ -24,9 +24,14 @@ class TimeSheetAdmin(admin.ModelAdmin):
         'exit_time',
     ]
 
+    def save_model(self, request, obj, form, change):
+        instance = form.save(commit=False)
+        instance.current_date = instance.gcurrent_date(obj.current_date)
+        instance.save()
+
     def get_current_date(self, obj):
-        arr_cur = str(obj.current_date).split("-")
-        return arr_cur[0]+"-"+arr_cur[1]+"-"+arr_cur[2]
+        return obj.jcurrent_date(obj.current_date)
+
     get_current_date.short_description = "تاریخ"
 
 

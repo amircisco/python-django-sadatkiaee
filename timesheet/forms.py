@@ -27,6 +27,7 @@ class CalcSalaryForm(forms.Form):
             self.fields[f"commission_percentage_percentage_{index}"] = forms.CharField(label="درصد پورسانت", initial=item.percentage)
             self.fields[f"commission_percentage_sum_{index}"] = forms.IntegerField(label="مجموع", initial=0,widget=forms.TextInput(attrs={'class': 'rowfield'}))
 
+        self.fields["dinnertime"] = forms.CharField(label="زمان استراحت و ناهار",initial="30")
         self.fields["worktime"] = forms.CharField(label=salarysettings.verbose_name("worktime"), initial=salarysettings.worktime)
         self.fields["extraworktime"] = forms.CharField(label=salarysettings.verbose_name("extraworktime"), initial=salarysettings.extraworktime)
         self.fields["workamount"] = forms.CharField(label=salarysettings.verbose_name("workamount"), initial=salarysettings.workamount)

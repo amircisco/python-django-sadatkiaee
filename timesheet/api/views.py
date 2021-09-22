@@ -8,6 +8,7 @@ from .serializers import GetTimeSheetSerializer, EnterTimeSheetSerializer, ExitT
 from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings as config_setting
+import datetime
 
 
 class GetSheetAPIView(APIView):
@@ -43,7 +44,7 @@ class GetSheetAPIView(APIView):
                 edame = True
 
         if edame == True:
-            current_date = jdatetime.datetime.now().date()
+            current_date = datetime.datetime.now().date()
             timesheet = TimeSheet.objects.filter(current_date=str(current_date), user_id=request.user.id).first()
             if timesheet is not None:
                 if timesheet.exit_time is None:
@@ -61,7 +62,7 @@ class EnterTimeSheetAPIView(APIView):
     serializer_class = EnterTimeSheetSerializer
 
     def post(self, request, *args, **kwargs):
-        current_date = str(jdatetime.datetime.now().date())
+        current_date = str(datetime.datetime.now().date())
         enter_time = str(jdatetime.datetime.now().time()).split(".")[0]
         data_serializer = {"user":request.user.id, "current_date":current_date, "enter_time":enter_time}
         serializer = EnterTimeSheetSerializer(data=data_serializer)
@@ -76,7 +77,7 @@ class ExitTimeSheetAPIView(APIView):
     serializer_class = ExitTimeSheetSerializer
 
     def post(self, request, *args, **kwargs):
-        current_date = jdatetime.datetime.now().date()
+        current_date = datetime.datetime.now().date()
         exit_time = str(jdatetime.datetime.now().time()).split(".")[0]
         timesheet = TimeSheet.objects.get(current_date=str(current_date), user=request.user)
         data_serializer = {"exit_time":exit_time}

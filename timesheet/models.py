@@ -1,5 +1,6 @@
 from django.db import models
 from account.models import User
+import jdatetime
 
 
 class TimeSheet(models.Model):
@@ -7,6 +8,31 @@ class TimeSheet(models.Model):
     current_date = models.DateField(default=None, blank=True,null=True, verbose_name="تاریخ")
     enter_time = models.TimeField(default=None, verbose_name="ساعت ورود")
     exit_time = models.TimeField(default=None, blank=True, null=True, verbose_name="ساعت خروج")
+
+    @property
+    def current_date_jalali(self):
+        return self.jcurrent_date(self.current_date)
+
+    @staticmethod
+    def gcurrent_date(date):
+        current_date = str(date)
+        if current_date.find("/") > -1 :
+            arr_date = current_date.split("/")
+            cur = jdatetime.datetime(year=int(arr_date[0]), month=int(arr_date[1]), day=int(arr_date[2])).togregorian().date()
+        elif current_date.find("-") > -1 :
+            arr_date = current_date.split("-")
+            cur = jdatetime.datetime(year=int(arr_date[0]), month=int(arr_date[1]), day=int(arr_date[2])).togregorian().date()
+        return str(cur)
+
+    def jcurrent_date(self, date):
+        current_date = str(date)
+        if current_date.find("/") > -1 :
+            arr_date = current_date.split("/")
+            cur = jdatetime.datetime.fromgregorian(year=int(arr_date[0]), month=int(arr_date[1]), day=int(arr_date[2])).date()
+        elif current_date.find("-") > -1 :
+            arr_date = current_date.split("-")
+            cur = jdatetime.datetime.fromgregorian(year=int(arr_date[0]), month=int(arr_date[1]), day=int(arr_date[2])).date()
+        return str(cur)
 
     def __str__(self):
         return str(self.user) + " " + str(self.current_date)
