@@ -19,6 +19,15 @@
             <td>{{ employee_name }}</td>
         </tr>
     {% endfor %}
+    <tr></tr>
+    <tr>
+        <th>مجموع ساعت کاری</th>
+        <th>مجموع ساعت اضافه کاری</th>
+    </tr>
+    <tr>
+        <td>{{ hours_hours|floatformat:"0" }}{%if minutes %}:{{ minutes }} {% endif %}</td>
+        <td>{{ extra_hours }}</td>
+    </tr>
     <tr></tr><tr></tr>
 
     {% if list_commission_amount %}
@@ -60,26 +69,24 @@
 
 
     <tr>
+        <th>مجموع دریافتی</th>
+        <th>کسرشده(بیمه)</th>
         <th>مجموع حقوق</th>
-        <th> پورسانت های درصدی</th>
-        <th> پورسانت های مبلغی</th>
-        <th> دستمزد ساعت کاری</th>
-        <th> ساعت اضافه کاری</th>
-        <th> ساعت کاری</th>
-        <th>تا تاریخ</th>
-        <th>از تاریخ</th>
-        <th>نام</th>
+        <th> پورسانت ها</th>
+        <th> مزایا</th>
+        <th>اضافه کاری</th>
+        <th>حقوق</th>
+        <th> پایه حقوق</th>
     </tr>
     <tr>
         <td>{% comma_rial majmoo  %}</td>
-        <td>{% comma_rial last_percentage %}</td>
-        <td>{% comma_rial last_amount %}</td>
-        <td>{% comma_rial last_work %}</td>
-        <td>{{ extra_hours }}</td>
-        <td>{{ hours }}:{{ minutes }}</td>
-        <td>{{ jto_date }}</td>
-        <td>{{ jfrom_date }}</td>
-        <td>{{ employee_name }}</td>
+        <td>{% comma_rial tamin  %}</td>
+        <td>{% comma_rial kol  %}</td>
+        <td>{% comma_rial poorsant %}</td>
+        <td>{% comma_rial mazaya %}</td>
+        <td>{% comma_rial extraamount %}</td>
+        <td>{% comma_rial amount %}</td>
+        <td>{% comma_rial payeh %}</td>
     </tr>
 
 

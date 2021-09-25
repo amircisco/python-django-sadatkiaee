@@ -12,10 +12,8 @@ class EmailModelBackend(ModelBackend):
         if username == None:
             username = kwargs.get('mobile')
         if len(username)==11 and username.isdigit():
-            user = list(User.objects.filter(Q(mobile=username)).values('id'))[0]
-            if user:
-                user = User.objects.get(pk=user.get('id'))
-                if user.check_password(password) and self.user_can_authenticate(user):
-                    return user
+            user = User.objects.filter(mobile=username).first()
+            if user is not None and user.check_password(password) and self.user_can_authenticate(user):
+                return user
         return None
 

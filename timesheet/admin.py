@@ -5,29 +5,19 @@ from django.http import HttpResponse
 from django.urls import path
 from django.views.generic import TemplateView
 from rest_framework import status
-from timesheet.models import TimeSheet, AccessPoint, CommissionAmount, CommissionPercentage, SalarySetting
-from .forms import CalcSalaryForm
+from timesheet.models import TimeSheet, AccessPoint, CommissionAmount, CommissionPercentage
+from .forms import CalcSalaryForm,TimesheetForm
 
 
 class TimeSheetAdmin(admin.ModelAdmin):
     model = TimeSheet
-    fields = [
-        'user',
-        'current_date',
-        'enter_time',
-        'exit_time',
-    ]
+    form = TimesheetForm
     list_display = [
         'user',
         'get_current_date',
         'enter_time',
         'exit_time',
     ]
-
-    def save_model(self, request, obj, form, change):
-        instance = form.save(commit=False)
-        instance.current_date = instance.gcurrent_date(obj.current_date)
-        instance.save()
 
     def get_current_date(self, obj):
         return obj.jcurrent_date(obj.current_date)
@@ -109,23 +99,6 @@ class CalcSalaryTimeSheetAdmin(admin.ModelAdmin):
         ]
 
 
-class SalarySettingAdmin(admin.ModelAdmin):
-    model = SalarySetting
-    fields = (
-        'worktime',
-        'extraworktime',
-        'workamount',
-        'extraworkamount',
-    )
-    list_display = (
-        'worktime',
-        'extraworktime',
-        'workamount',
-        'extraworkamount',
-    )
-
-
-admin.site.register(SalarySetting, SalarySettingAdmin)
 admin.site.register(CalcSalaryTimeSheetProxy, CalcSalaryTimeSheetAdmin)
 admin.site.register(CommissionAmount, CommissionAmountAdmin)
 admin.site.register(CommissionPercentage, CommissionPercentageAdmin)

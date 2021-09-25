@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import TimeSheet, SalarySetting
+from .models import TimeSheet
 from django.db.models import F, Sum, ExpressionWrapper, fields,Func
 from account.models import User
 
@@ -12,6 +12,10 @@ def calc_salary(request):
     from_date = TimeSheet.gcurrent_date(jfrom_date)
     jto_date = request.POST['to_date']
     to_date = TimeSheet.gcurrent_date(jto_date)
+    tamin = int(request.POST["tamin"])
+    bon = int(request.POST["bon"])
+    maskan = int(request.POST["maskan"])
+    payeh = int(request.POST["payeh"])
     dinnertime = int(request.POST["dinnertime"])
     worktime = float(request.POST['worktime'])
     extraworktime = float(request.POST['extraworktime'])
@@ -27,20 +31,21 @@ def calc_salary(request):
     extra_hours = 0
 
     if hours == worktime:
+        hours_hours = int(worktime)
         amount = hours * workamount
-        extraamount = int((((minutes * 100) / 60) * extraworkamount) / 100)
-        last_work = int(amount + extraamount)
+        extraamount = 0
+        #last_work = int(amount + extraamount)
     elif hours > worktime:
+        hours_hours = int(worktime)
         amount = worktime * workamount
-        part1 = extraworktime if (hours - worktime) > extraworktime else (hours - worktime)  * extraworkamount
-        part2 = int((((minutes * 100) / 60) * extraworkamount) / 100)
-        extraamount = part1 + part2
-        last_work = int(amount + extraamount)
-        extra_hours = int(hours - worktime)
+        extraamount = extraworktime * extraworkamount if (hours - worktime) > extraworktime else (hours - worktime)  * extraworkamount
+        extra_hours = int(hours - worktime) if int(hours - worktime) <= extraworktime else extraworktime
     elif hours < worktime:
+        hours_hours = int(hours)
         part1 = hours * workamount
         part2 = int((((minutes * 100) / 60) * workamount) / 100)
-        last_work = int(part1 + part2)
+        amount = int(part1 + part2)
+        extraamount = 0
 
     list_commission_amount = []
     list_commission_percentage = []
@@ -70,11 +75,19 @@ def calc_salary(request):
         last_percentage+=cur
         list_commission_percentage.append({"name": commission_percentage_name, "sum": commission_percentage_sum, "percentage": commission_percentage_percentage,"last": cur})
 
+    if hours_hours >= worktime:
+        minutes = ""
+        hours_hours = worktime
+
     return render(request,"timesheet/calc_salary.html",{
         "last_amount":last_amount,
         "last_percentage":last_percentage,
-        "last_work":last_work,
-        "majmoo": last_amount + last_percentage + last_work,
+        "poorsant":last_amount + last_percentage,
+        "majmoo": (last_amount + last_percentage + amount + extraamount + bon + maskan + payeh) - tamin ,
+        "kol":(last_amount + last_percentage + amount + extraamount + bon + maskan + payeh),
+        "mazaya":bon + maskan,
+        "payeh":payeh,
+        "tamin":tamin,
         "hours":hours,
         "minutes":minutes,
         "employee_name":employee_info.username,
@@ -85,4 +98,7 @@ def calc_salary(request):
         "list_commission_amount":list_commission_amount,
         "list_commission_percentage":list_commission_percentage,
         "extra_hours":extra_hours,
+        "hours_hours": hours_hours,
+        "extraamount":extraamount,
+        "amount":amount,
     })

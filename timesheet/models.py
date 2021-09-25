@@ -22,7 +22,7 @@ class TimeSheet(models.Model):
         elif current_date.find("-") > -1 :
             arr_date = current_date.split("-")
             cur = jdatetime.datetime(year=int(arr_date[0]), month=int(arr_date[1]), day=int(arr_date[2])).togregorian().date()
-        return str(cur)
+        return cur
 
     def jcurrent_date(self, date):
         current_date = str(date)
@@ -85,25 +85,3 @@ class CommissionPercentage(Commission):
     class Meta:
         verbose_name = "پورسانت درصدی"
         verbose_name_plural = "پورسانت ها درصدی"
-
-
-class SalarySetting(models.Model):
-    worktime = models.IntegerField(unique=True, verbose_name="حداکثر ساعت کاری", default=176)
-    extraworktime = models.IntegerField(unique=True, verbose_name="حداکثر ساعت اضافه کاری", default=120)
-    workamount = models.CharField(max_length=50, unique=True, verbose_name="دستمزد یک ساعت کاری", default=80000)
-    extraworkamount = models.CharField(max_length=50, unique=True, verbose_name="دستمزد یک ساعت اضافه کاری", default=170000)
-
-    @property
-    def commaworkamount(self):
-        return "{:,.0f}".format(float(self.workamount))
-
-    @property
-    def commaextraforkamount(self):
-        return "{:,.0f}".format(self.extraworkamount)
-
-    def verbose_name(self,fieldname):
-        return self._meta.get_field(fieldname).verbose_name
-
-    class Meta:
-        verbose_name = "تنظمیات حقوق"
-        verbose_name_plural = "تنظیمات حقوق"
