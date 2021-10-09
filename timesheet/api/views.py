@@ -25,10 +25,15 @@ class GetSheetAPIView(APIView):
 
 
     def post(self, request, *args, **kwargs):
+        edame = False
         details = request.data['details']
         if "ssid" in details and str(details["ssid"]).__len__() == 0:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-        edame = False
+            if "extra" in details and details["extra"] == "pc":
+                if AccessPoint.objects.filter(bssid=details["mac"]).exists():
+                    edame = True
+            else:        
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
         if details["bssid"] == "02:00:00:00:00:00":
             arr_ip = details["ipAddress"].split(".")
             ip = arr_ip[0]+"."+arr_ip[1]+"."+arr_ip[2]+".1"
@@ -37,7 +42,7 @@ class GetSheetAPIView(APIView):
                 if AccessPoint.objects.filter(ip=ip,subnet=details["subnet"]).exists() and config_setting.ACCESSPOINT_IP in client_ip:
                     edame = True
             else:
-                if AccessPoint.objects.filter(ip=ip,subnet=details["subnet"]).exists():
+                if AccessPoint.objects.filter(ip=ip,subnet=details["subnet"]).exists(): # check local ip and subnet mask
                     edame = True
         else:
             if AccessPoint.objects.filter(ssid=details["ssid"],bssid=details["bssid"].upper()).exists() or AccessPoint.objects.filter(ssid=details["ssid"],bssid=details["bssid"].lower()).exists():

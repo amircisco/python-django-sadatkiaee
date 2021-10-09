@@ -2,12 +2,11 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser,PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
-from django_jalali.db import models as jmodels
-import jdatetime
 from django.utils import timezone
 
 
 class UserManager(BaseUserManager):
+
     def create_user(self, mobile, username, password, **extra_fields):
         if not mobile:
             raise ValueError(_('the mobile must be set'))

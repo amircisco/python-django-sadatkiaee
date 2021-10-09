@@ -1,22 +1,30 @@
-from django.test import TestCase
 from account.models import User
 from timesheet.models import TimeSheet
-from django.core.exceptions import ValidationError
+import pytest
 
 
-class TimeSheetModelTest(TestCase):
+@pytest.fixture
+def create_user(db):
+    mobile = "09121234567"
+    username = "amir"
+    password = "123"
+    return User.objects.create_user(mobile,username,password)
 
-    def setUp(self):
-        self.mobile = "09121234567"
-        self.username = "amir"
-        self.password = "123"
-        self.user = User.objects.create_user(self.mobile, self.username, self.password)
-        self.timesheet = TimeSheet.objects.create(user=self.user, current_date="1400-10-10", enter_time="14:20:22")
 
-    def test_datetime(self):
-        self.assertEqual(self.timesheet.current_date, "1400-10-10")
-        self.assertEqual(self.timesheet.enter_time,"14:20:22")
-        self.assertEqual(self.timesheet.exit_time, None)
+@pytest.fixture
+def create_timesheet(db,create_user):
+    return TimeSheet.objects.create(user=create_user, current_date="1400-10-10", enter_time="14:20:22")
 
-    def test_userinfo(self):
-        self.assertEqual(self.user.mobile,self.mobile)
+
+def test_datetime(create_timesheet):
+    assert create_timesheet.current_date == "1400-10-10"
+    assert create_timesheet.enter_time == "14:20:22"
+    assert create_timesheet.exit_time == None
+
+
+def test_userinfo_mobile(create_user):
+    assert create_user.mobile == "09121234567"
+
+
+def test_userinfo_username(create_user):
+    assert create_user.username == "amir"

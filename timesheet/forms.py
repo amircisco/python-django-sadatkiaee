@@ -21,14 +21,14 @@ class TimesheetForm(forms.ModelForm):
 
 
 class CalcSalaryForm(forms.Form):
-    ch = list(User.objects.filter(Q(groups__name="visitor") | Q(groups__name="employee")).values_list("id", "username"))
-    ch.insert(0, ('0', 'انتخاب کارمند'))
-    employee = forms.ChoiceField(label="کارمند", choices=ch)
     from_date = forms.DateField(label="از تاریخ")
     to_date = forms.DateField(label="تا تاریخ")
 
     def __init__(self):
         super().__init__()
+        ch = list(User.objects.filter(Q(groups__name="visitor") | Q(groups__name="employee")).values_list("id", "username"))
+        ch.insert(0, ('0', 'انتخاب کارمند'))
+        self.fields["employee"] = forms.ChoiceField(label="کارمند", choices=ch)
         commissions_amount = CommissionAmount.objects.all()
         commission_percentage = CommissionPercentage.objects.all()
         for index, item in enumerate(commissions_amount,start=1):

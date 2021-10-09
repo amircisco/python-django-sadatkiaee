@@ -8,6 +8,9 @@ from bazdidkhodro.api.views import (
     MenuItemAPIView,
     MobileSignalAPIView,
 )
+
+
+app_name = "bazdidkhodro"
 urlpatterns = [
     path('insurer_list/', InsurerListAPIView.as_view(), name='insurer_list_view'),
     path('insurer_create/', InsurerCreateAPIView.as_view(), name='insurer_create_view'),

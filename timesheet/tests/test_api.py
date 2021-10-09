@@ -1,44 +1,71 @@
-from django.test import TestCase, Client
+from rest_framework.test import APIClient
 from django.urls import reverse
 from rest_framework import status
 from account.models import User
 from timesheet.models import TimeSheet
-from rest_framework_simplejwt.tokens import RefreshToken,AccessToken
-import jdatetime
+from rest_framework_simplejwt.tokens import AccessToken
+import datetime
+import pytest
 
 
-class ApiTimeSheetTest(TestCase):
+@pytest.fixture
+def api_client():
+    return APIClient()
 
-    def setUp(self):
-        self.user = User.objects.create_user("09196421676", "amir", "123")
-        self.client = Client()
 
-    def test_get_timesheet_auth(self):
-        response = self.client.post(reverse('get_timesheet'), {'details':''})
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+@pytest.fixture
+@pytest.mark.django_db
+def employee_user(db):
+    user = User.objects.create_user("09191234567", "user1", "123")
+    user.is_staff = True
+    user.is_active = True
+    user.groups.name = "employee"
+    user.save()
+    return user
 
-    def test_enter_timesheet(self):
-        token = AccessToken.for_user(self.user)
-        header = {
-            'HTTP_AUTHORIZATION':'Bearer {}'.format(token)
-        }
-        response = self.client.post(reverse('enter_timesheet'), **header)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_enter_timesheet_auth(self):
-        token = AccessToken.for_user(self.user)
-        response = self.client.post(reverse('enter_timesheet'))
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+@pytest.fixture
+def access_token_employee_user(employee_user):
+    return AccessToken.for_user(employee_user)
 
-    def test_exit_timesheet(self):
-        current_date = str(jdatetime.datetime.now().date())
-        enter_time = str(jdatetime.datetime.now().time()).split(".")[0]
-        TimeSheet.objects.create(user=self.user, current_date=current_date, enter_time=enter_time)
-        token = AccessToken.for_user(self.user)
-        header = {
-            'HTTP_AUTHORIZATION':'Bearer {}'.format(token)
-        }
-        response = self.client.post(reverse('exit_timesheet'), **header)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+def test_get_timesheet_auth(api_client, access_token_employee_user):
+    url = reverse('get_timesheet')
+    data = {"details":{"ssid":""}}
+    api_client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(access_token_employee_user))
+    response = api_client.post(url, data, format='json')
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+def test_enter_timesheet(api_client, access_token_employee_user):
+    url = reverse('enter_timesheet')
+    api_client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(access_token_employee_user))
+    response = api_client.post(url)
+    assert response.status_code == status.HTTP_200_OK
+
+
+def test_enter_timesheet_auth(api_client, access_token_employee_user):
+    url = reverse('enter_timesheet')
+    api_client.credentials(HTTP_AUTHORIZATION="Bearer {}".format("aaaa"))
+    response = api_client.post(url)
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+def test_exit_timesheet(db,api_client, access_token_employee_user, employee_user):
+    current_date = str(datetime.datetime.now().date())
+    enter_time = str(datetime.datetime.now().time()).split(".")[0]
+    TimeSheet.objects.create(user=employee_user, current_date=current_date, enter_time=enter_time)
+    url = reverse('exit_timesheet')
+    api_client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(access_token_employee_user))
+    response = api_client.post(url)
+    assert response.status_code == status.HTTP_200_OK
+
+
+
+
+
+
+
 
 

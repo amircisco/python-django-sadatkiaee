@@ -18,6 +18,7 @@ ALLOWED_HOSTS = [
     '*',
 ]
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -28,20 +29,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',
-    'bazdidkhodro.apps.BazdidkhodroConfig',
     'timesheet.apps.TimesheetConfig',
+    'bazdidkhodro.apps.BazdidkhodroConfig',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'config.middleware.filter_ip_middleware.FilterIPMiddleware',
+    #'config.middleware.filter_ip_middleware.FilterIPMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -144,6 +147,8 @@ SIMPLE_JWT = {
 AUTHENTICATION_BACKENDS = [
     'account.backends.EmailModelBackend',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 import pymysql
 
